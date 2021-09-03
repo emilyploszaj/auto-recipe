@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "autorecipe",
+  "version": "${version}",
+  "name": "Auto Recipe",
+  "description": "Makes recipe serialization simpler",
+  "authors": [
+    "Emi"
+  ],
+  "contributors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/autorecipe/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "autorecipe.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.0"
+  }
+}

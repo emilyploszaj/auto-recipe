@@ -1,0 +1,19 @@
+{
+  "type": "auto:test",
+  "ingredient": {
+    "item": "minecraft:grass_block"
+  },
+  "input": {
+    "item": "minecraft:stone",
+    "count": 2
+  },
+  "name": "rabbit flop",
+  "numbers": [
+    11, 22, 999
+  ],
+  "trans": {
+    "bun:bun": "minecraft:ice",
+    "minecraft:cry": "minecraft:water_bucket"
+  },
+  "anvil": "minecraft:sand"
+}
