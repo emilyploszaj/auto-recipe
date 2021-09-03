@@ -47,7 +47,17 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 				variables.put(annot, field);
 				RecipeVarSerializer<?> serializer = AutoRecipeRegistry.getVariableSerializer(namespace, field.getType());
 				if (field.getType() == Map.class) {
-
+					Class<?> stringType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+					if (stringType != String.class) {
+						try {
+							Constructor cs = stringType.getConstructor(String.class);
+							if (cs == null || !cs.canAccess(this)) {
+								throw new RuntimeException("Map key for field " + field.getName() + " cannot be constructed from a string");
+							}
+						} catch (NoSuchMethodException e) {
+							throw new RuntimeException("Map key for field " + field.getName() + " cannot be constructed from a string", e);
+						}
+					}
 				} else if (serializer == null && field.getType() != List.class && field.getType() != Set.class
 						&& field.getType() != DefaultedList.class) {
 					LOG.warn("No serializer found for type " + field.getType().getTypeName() + " at "
