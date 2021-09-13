@@ -69,7 +69,7 @@ public class AutoRecipeRegistry {
 	 * Registers a recipe variable serializer for a given class in a given namespace
 	 */
 	public static <T> void registerVariableSerializer(String namespace, Class<T> clazz, RecipeVarSerializer<T> serializer) {
-		Map<Class<?>, RecipeVarSerializer<?>> map = SCOPED_VAR_SERIALIZERS.putIfAbsent(namespace, new HashMap<>());
+		Map<Class<?>, RecipeVarSerializer<?>> map = SCOPED_VAR_SERIALIZERS.computeIfAbsent(namespace, a -> new HashMap<>());
 		if (map.containsKey(clazz)) {
 			LOG.warn("Variable serializer registered over existing serializer for class " + clazz.getTypeName());
 		}
