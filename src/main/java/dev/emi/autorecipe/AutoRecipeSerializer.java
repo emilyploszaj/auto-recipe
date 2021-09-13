@@ -229,10 +229,10 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 					//buf.writeMap((Map) field.get(recipe), (b, k) -> b.writeString(k.toString()), varSerializer::writePacket);
 					writeMap(buf, (Map) field.get(recipe), (b, k) -> b.writeString(k.toString()), varSerializer::writePacket);
 				} else {
-					RecipeVarSerializer<?> varSerializer = AutoRecipeRegistry.getVariableSerializer(namespace, fieldType);
+					RecipeVarSerializer<Object> varSerializer =
+						(RecipeVarSerializer<Object>) AutoRecipeRegistry.getVariableSerializer(namespace, fieldType);
 					// Generic hack
-					varSerializer.getClass().getMethod("writePacket", PacketByteBuf.class, Object.class)
-						.invoke(varSerializer, buf, field.get(recipe));
+					varSerializer.writePacket(buf, field.get(recipe));
 				}
 			} catch (Exception e) {
 				throw new RuntimeException("Error writing packet", e);
