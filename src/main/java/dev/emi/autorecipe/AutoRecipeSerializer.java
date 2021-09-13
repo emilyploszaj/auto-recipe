@@ -144,7 +144,6 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 				}
 			}
 		}
-		System.out.println("Read recipe: " + t);
 		return t;
 	}
 
@@ -208,7 +207,6 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 				throw new RuntimeException("Error parsing packet", e);
 			}
 		}
-		System.out.println("Read [(remote)] recipe: " + t);
 		return t;
 	}
 
