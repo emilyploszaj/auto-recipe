@@ -9,6 +9,12 @@ import net.minecraft.util.Identifier;
 public abstract class AutoSerializedRecipe<T extends Inventory> implements Recipe<T> {
 	public Identifier id;
 
+	/**
+	 * Called after being parsed, to finalize values
+	 */
+	public void compile() {
+	}
+
 	@Override
 	public boolean fits(int width, int height) {
 		return true;

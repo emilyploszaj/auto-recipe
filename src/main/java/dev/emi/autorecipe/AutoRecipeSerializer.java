@@ -83,14 +83,30 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 			RecipeVar var = entry.getKey();
 			Field field = entry.getValue();
 			try {
-				String[] parts = var.value().split("/");
-				JsonObject obj = json;
-				int i = 0;
-				while (i + 1 < parts.length) {
-					obj = obj.getAsJsonObject(parts[i]);
-					i++;
+				JsonElement el = null;
+				try {
+					String[] parts = var.value().split("/");
+					JsonObject obj = json;
+					int i = 0;
+					while (i + 1 < parts.length) {
+						obj = obj.getAsJsonObject(parts[i]);
+						i++;
+					}
+					el = obj.get(parts[i]);
+				} catch (Exception e) {
+					if (var.required()) {
+						throw new RuntimeException(e);
+					} else {
+						continue;
+					}
 				}
-				JsonElement el = obj.get(parts[i]);
+				if (el == null || el.isJsonNull()) {
+					if (var.required()) {
+						throw new RuntimeException("Required element not found");
+					} else {
+						continue;
+					}
+				}
 				Class<?> fieldType = field.getType();
 				if (fieldType == List.class || fieldType == Set.class || fieldType == DefaultedList.class) {
 					Class<?> genericType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
@@ -111,7 +127,7 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 						collection.add(varSerializer.readJson(el));
 					}
 					field.set(t, collection);
-				} else if (fieldType ==  Map.class) {
+				} else if (fieldType == Map.class) {
 					Type[] types = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
 					Class<?> stringType = (Class<?>) types[0];
 					Class<?> genericType = (Class<?>) types[1];
@@ -139,10 +155,11 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 					field.set(t, varSerializer.readJson(el));
 				}
 			} catch (Exception e) {
-				if (var.required()) {
-					throw new RuntimeException("Error parsing recipe " + id + ", missing or malformed field " + field.getName(), e);
-				}
+				throw new RuntimeException("Error parsing recipe " + id + ", malformed field " + field.getName(), e);
 			}
+		}
+		if (t instanceof AutoSerializedRecipe) {
+			((AutoSerializedRecipe) t).compile();
 		}
 		return t;
 	}
@@ -206,6 +223,9 @@ public class AutoRecipeSerializer<T extends Recipe<?>> implements RecipeSerializ
 			} catch (Exception e) {
 				throw new RuntimeException("Error parsing packet", e);
 			}
+		}
+		if (t instanceof AutoSerializedRecipe) {
+			((AutoSerializedRecipe) t).compile();
 		}
 		return t;
 	}

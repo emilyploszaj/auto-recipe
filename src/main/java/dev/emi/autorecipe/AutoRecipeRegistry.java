@@ -38,9 +38,9 @@ public class AutoRecipeRegistry {
 	 * 
 	 * @return The recipe type
 	 */
-	public static <V extends Inventory, T extends AutoSerializedRecipe<V>> AutoSerializedRecipe<V> registerRecipeSerializer(Identifier id,
+	public static <V extends Inventory, T extends AutoSerializedRecipe<V>> RecipeType<T> registerRecipeSerializer(Identifier id,
 			Supplier<T> supplier) {
-		return (AutoSerializedRecipe<V>) registerRecipeSerializer(id, i -> supplier.get());
+		return registerRecipeSerializer(id, i -> supplier.get());
 	}
 
 	/**
